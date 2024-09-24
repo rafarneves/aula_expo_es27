@@ -1,15 +1,20 @@
-import { Alert, Button, TextInput, Text, View } from 'react-native'
+import { Alert, Button, View } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
+
+import MyInput from '../../components/MyInput'
 
 import styles from './styles'
 
 export default function LoginPage() {
+
+    const navigation = useNavigation<any>()
 
     let username = ''
     let password = ''
 
     function signIn() {
         if (username === 'uedsonreis' && password === '123456') {
-            Alert.alert('Usuário logado com sucesso')
+            navigation.navigate('Home')
         } else {
             Alert.alert('Login/senha inválido(a)!')
         }
@@ -17,17 +22,8 @@ export default function LoginPage() {
 
     return (
         <View style={styles.page}>
-            <Text style={styles.title}>Acesso ao App</Text>
-
-            <View style={styles.inputView}>
-                <Text style={styles.label}>Login:</Text>
-                <TextInput style={styles.input} onChangeText={value => username = value} />
-            </View>
-
-            <View style={styles.inputView}>
-                <Text style={styles.label}>Senha:</Text>
-                <TextInput style={styles.input} onChangeText={value => password = value} secureTextEntry />
-            </View>
+            <MyInput label='Login' change={value => username = value} />
+            <MyInput label='Senha' change={value => password = value} secureTextEntry />
 
             <View style={styles.buttonView}>
                 <Button title='Entrar' onPress={signIn} />
