@@ -43,6 +43,14 @@ class UserService {
         return await this.getData(response) as User
     }
 
+    public async delete(id: number) {
+        const response = await fetch(`${this.url}/${id}`, {
+            method: 'DELETE',
+            headers: await this.getHeaders(),
+        })
+        return await this.getData(response) as boolean
+    }
+
 }
 
 export const userService = new UserService()

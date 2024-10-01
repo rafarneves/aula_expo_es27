@@ -1,3 +1,4 @@
+import React from 'react'
 import { Alert, Button, View } from 'react-native'
 import { NavigationProp, useNavigation } from '@react-navigation/native'
 
@@ -11,12 +12,14 @@ export default function LoginPage() {
 
     const navigation = useNavigation<NavigationProp<any>>()
 
-    navigation.setOptions({
-        headerLeft: () => <></>
-    })
-
     let username = ''
     let password = ''
+
+    React.useEffect(() => {
+        navigation.setOptions({
+            headerLeft: () => <></>
+        })
+    }, [])
 
     function signIn() {
         authService.login(username, password).then(isLogged => {

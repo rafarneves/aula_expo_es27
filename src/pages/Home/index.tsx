@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, FlatList, Text, View } from "react-native"
+import { Alert, Button, FlatList, Text, View } from "react-native"
 import { NavigationProp, useNavigation } from '@react-navigation/native'
 
 import { userService } from '../../services/user.service'
@@ -9,6 +9,7 @@ import ListItem from '../../components/ListItem'
 export default function HomePage() {
 
     const navigation = useNavigation<NavigationProp<any>>()
+
     const [users, setUsers] = React.useState<User[]>([])
     const [refreshing, setRefreshing] = React.useState(false)
 
@@ -36,14 +37,26 @@ export default function HomePage() {
         navigation.navigate('User')
     }
 
+    function remover(id: number) {
+        userService.delete(id).then(isDelete => {
+            if (isDelete) fetchUsers()
+            else Alert.alert('Usuário não existe')
+        })
+    }
+
     return (
         <View>
             <FlatList
                 onRefresh={fetchUsers}
                 refreshing={refreshing}
                 data={users}
+                keyExtractor={user => user.username}
                 renderItem={({ item }) => (
-                    <ListItem title={item.name} subTitle={item.username} />
+                    <ListItem
+                        title={item.name}
+                        subTitle={item.username}
+                        onRemove={() => remover(item.id!)}
+                    />
                 )}
             />
         </View>
