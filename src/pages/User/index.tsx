@@ -1,12 +1,15 @@
 import React from 'react'
-import { Alert, Button, Text, TextInput, View } from 'react-native'
+import { Alert, Button, View } from 'react-native'
+import { NavigationProp, useNavigation } from '@react-navigation/native'
 
+import { userService } from '../../services/user.service'
 import MyInput from '../../components/MyInput'
 
 import styles from './styles'
 
 export default function UserPage() {
 
+    const navigation = useNavigation<NavigationProp<any>>()
     const [name, setName] = React.useState('')
 
     let username = ''
@@ -31,8 +34,15 @@ export default function UserPage() {
             return
         }
 
-        // salvar o usuário novo
-        Alert.alert('Usuário salvo com sucesso!')
+        userService.create({ name, username, password }).then(saved => {
+            navigation.goBack()
+        }).catch((error: Error) => {
+            if (error.cause === 400) {
+                Alert.alert('Usuário já existe!')
+            } else {
+                navigation.navigate('Login')
+            }
+        })
     }
 
     return (
