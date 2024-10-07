@@ -43,6 +43,15 @@ class UserService {
         return await this.getData(response) as User
     }
 
+    public async update(user: User) {
+        const response = await fetch(`${this.url}/${user.id}`, {
+            method: 'PUT',
+            headers: await this.getHeaders(),
+            body: JSON.stringify(user)
+        })
+        return await this.getData(response) as User
+    }
+
     public async delete(id: number) {
         const response = await fetch(`${this.url}/${id}`, {
             method: 'DELETE',

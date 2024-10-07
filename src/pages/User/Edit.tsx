@@ -1,8 +1,9 @@
 import React from 'react'
 import { Alert, Button, View } from 'react-native'
-import { NavigationProp, useNavigation } from '@react-navigation/native'
+import { NavigationProp, useNavigation, useRoute } from '@react-navigation/native'
 
 import { userService } from '../../services/user.service'
+import { User } from '../../models/user.model'
 import MyInput from '../../components/MyInput'
 
 import styles from './styles'
@@ -10,14 +11,15 @@ import styles from './styles'
 export default function UserPage() {
 
     const navigation = useNavigation<NavigationProp<any>>()
-    const [name, setName] = React.useState('')
+    const route = useRoute()
 
-    let username = ''
-    let password = ''
-    let confirmPass = ''
+    const user = route.params as User
+
+    const [name, setName] = React.useState(user.name)
+    const [username, setUsername] = React.useState(user.username)
 
     React.useEffect(() => {
-        navigation.setOptions({ title: 'Novo Usuário' })
+        navigation.setOptions({ title: `Usuário: Id ${user.id}` })
     }, [])
 
     function save() {
@@ -25,20 +27,8 @@ export default function UserPage() {
             Alert.alert('O Nome é obrigatório')
             return
         }
-        if (username.trim() === '') {
-            Alert.alert('O Login é obrigatório')
-            return
-        }
-        if (password.trim() === '') {
-            Alert.alert('A Senha é obrigatória')
-            return
-        }
-        if (password !== confirmPass) {
-            Alert.alert('A senha não confere')
-            return
-        }
 
-        userService.create({ name, username, password }).then(saved => {
+        userService.update({ id: user.id, name, username }).then(saved => {
             navigation.goBack()
         }).catch((error: Error) => {
             if (error.cause === 400) {
@@ -53,9 +43,7 @@ export default function UserPage() {
         <View style={styles.page}>
 
             <MyInput label='Name' initialValue={name} change={setName} />
-            <MyInput label='Login' change={value => username = value} />
-            <MyInput label='Senha' change={value => password = value} secureTextEntry />
-            <MyInput label='Confirmar Senha' change={value => confirmPass = value} secureTextEntry />
+            <MyInput label='Login' initialValue={username} />
 
             <View style={styles.buttonView}>
                 <Button title='Salvar' onPress={save} />

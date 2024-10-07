@@ -6,7 +6,7 @@ type Props = {
     label: string,
     initialValue?: string,
     secureTextEntry?: boolean,
-    change: (value: string) => void,
+    change?: (value: string) => void,
 }
 
 export default function MyInput(props: Props) {
@@ -15,6 +15,7 @@ export default function MyInput(props: Props) {
             <Text style={styles.label}>{props.label}:</Text>
             <TextInput
                 style={styles.input}
+                readOnly={!props.change}
                 value={props.initialValue}
                 onChangeText={props.change}
                 secureTextEntry={props.secureTextEntry}

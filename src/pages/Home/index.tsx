@@ -1,7 +1,8 @@
 import React from 'react'
-import { Alert, Button, FlatList, Text, View } from "react-native"
+import { Alert, Button, FlatList, View } from "react-native"
 import { NavigationProp, useNavigation } from '@react-navigation/native'
 
+import { authService } from '../../services/auth.service'
 import { userService } from '../../services/user.service'
 import { User } from "../../models/user.model"
 import ListItem from '../../components/ListItem'
@@ -24,9 +25,14 @@ export default function HomePage() {
         })
     }
 
+    function logOut() {
+        authService.logOut()
+        navigation.navigate('Login')
+    }
+
     React.useEffect(() => {
         navigation.setOptions({
-            headerLeft: () => <Button title="Sair" />,
+            headerLeft: () => <Button title="Sair" onPress={logOut} />,
             headerRight: () => <Button title="Add" onPress={goToNewUser} />
         })
 
@@ -35,6 +41,10 @@ export default function HomePage() {
 
     function goToNewUser() {
         navigation.navigate('User')
+    }
+
+    function update(user: User) {
+        navigation.navigate('EditUser', user)
     }
 
     function remover(id: number) {
@@ -55,6 +65,7 @@ export default function HomePage() {
                     <ListItem
                         title={item.name}
                         subTitle={item.username}
+                        onEdit={() => update(item)}
                         onRemove={() => remover(item.id!)}
                     />
                 )}
